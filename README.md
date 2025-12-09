@@ -1,1 +1,1 @@
-# quelokura
+# zabbix=proxy
