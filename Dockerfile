@@ -1,7 +1,7 @@
 # Usa a imagem oficial do Zabbix Proxy baseada em Ubuntu
 FROM zabbix/zabbix-proxy-sqlite3:7.0.9-ubuntu
 
-# --- Adicione esta linha para garantir que o apt e a instalação sejam executados como root ---
+# --- CORREÇÃO 1: Garante que comandos de instalação sejam executados como root ---
 USER root 
 
 # Variáveis para a versão do Instant Client
@@ -10,8 +10,10 @@ ENV ORACLE_HOME /opt/oracle/instantclient_${ORACLE_IC_VERSION}
 ENV TNS_ADMIN /etc/oracle
 
 # --- 1. Instalar Pré-requisitos (apt) ---
+# Adicionando 'dialog' (pode ser uma dependência para o unixodbc em algumas bases)
+# Mantive a busca pelo 'libaio1', mas se persistir, pule esta dependência.
 RUN apt update && \
-    apt install -y --no-install-recommends unixodbc libaio1 unzip && \
+    apt install -y --no-install-recommends unixodbc libaio1 unzip dialog && \
     rm -rf /var/lib/apt/lists/*
 
 # --- 2. Instalar o Instant Client a partir de ZIP ---
@@ -38,5 +40,5 @@ RUN echo "[Oracle 19c ODBC driver]" >> /etc/odbcinst.ini && \
     echo "Driver      = ${ORACLE_HOME}/libsqora.so.19.1" >> /etc/odbcinst.ini && \
     echo "FileUsage   = 1" >> /etc/odbcinst.ini
 
-# Opcional: Voltar para o usuário padrão da imagem (geralmente 'zabbix')
+# Opcional: Recomendado voltar para o usuário padrão não-root (geralmente 'zabbix')
 # USER zabbix
