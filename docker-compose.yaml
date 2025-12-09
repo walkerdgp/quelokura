@@ -1,6 +1,6 @@
 services:
   zabbix-proxy-sqlite3:
-    # SUBSTITUIÇÃO: Usa 'build' em vez de 'image' para criar a imagem customizada
+    # Usa 'build' para criar a imagem customizada baseada no Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,26 +10,26 @@ services:
       
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/odbc.ini:/etc/odbc.ini"    # Mapeia o DSN (TOTALBANCO_MONITOR)
-      # Nota: o odbcinst.ini é criado e configurado dentro do Dockerfile,
-      # mas o mapeamento original foi mantido caso você precise usar um arquivo host
-      - "/etc/odbcinst.ini:/etc/odbcinst.ini" 
-      - "/etc/oracle:/etc/oracle"        # Mapeia o TNSNAMES.ORA
+      - "/etc/odbc.ini:/etc/odbc.ini"    # DSN (Data Source Name)
+      - "/etc/odbcinst.ini:/etc/odbcinst.ini" # Configuração do driver
+      - "/etc/oracle:/etc/oracle"        # TNSNAMES.ORA
       
     environment:
-      # Configurações do Proxy
+      # --- Configurações de Ambiente do Oracle/ODBC ---
+      # Caminhos do Instant Client no container
+      - 'ORACLE_HOME=/opt/oracle/instantclient_19_10'
+      - 'LD_LIBRARY_PATH=/opt/oracle/instantclient_19_10'
+      - 'TNS_ADMIN=/etc/oracle'
+      
+      # --- Configurações do Proxy (Mantidas originais) ---
       - 'ZBX_SERVER_HOST=10.0.2.120'
       - 'ZBX_SERVER_PORT=10051'
       - 'ZBX_HOSTNAME=Proxy-Randon'  
-      
-      # Buffer e Frequências
       - 'ZBX_PROXYLOCALBUFFER=24'
       - 'ZBX_PROXYOFFLINEBUFFER=24'
       - 'ZBX_PROXYHEARTBEATFREQUENCY=60'
       - 'ZBX_CONFIGFREQUENCY=600'
       - 'ZBX_DATASENDERFREQUENCY=30'
-      
-      # Processos Iniciais (StartPollers, etc.)
       - 'ZBX_ENABLEREMOTECOMMANDS=1'
       - 'ZBX_STARTPOLLERS=15'
       - 'ZBX_STARTPOLLERSUNREACHABLE=10'
@@ -38,23 +38,13 @@ services:
       - 'ZBX_STARTTRAPPERS=20'
       - 'ZBX_STARTPINGERS=15'
       - 'ZBX_STARTDISCOVERERS=5'
-      
-      # Coleta VMware
       - 'ZBX_STARTVMWARECOLLECTORS=15'
       - 'ZBX_VMWAREFREQUENCY=60'
       - 'ZBX_VMWAREPERFFREQUENCY=60'
       - 'ZBX_VMWARECACHESIZE=256M'
       - 'ZBX_VMWARETIMEOUT=300'
-      
-      # Cache e Sincronização
       - 'ZBX_CACHESIZE=512M'
       - 'ZBX_STARTDBSYNCERS=8'
       - 'ZBX_HISTORYCACHESIZE=32M'
       - 'ZBX_HISTORYINDEXCACHESIZE=32M'
       - 'ZBX_TIMEOUT=30'
-      
-      # Configuração TNS (para acesso ao Oracle)
-      - 'TNS_ADMIN=/etc/oracle'
-      
-      # Adicionais (melhor prática ao usar Instant Client)
-      - 'LD_LIBRARY_PATH=/usr/lib/oracle/19.10/client64/lib'
