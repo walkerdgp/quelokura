@@ -1,0 +1,37 @@
+EMRA =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.250.135)(PORT = 1521))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.250.136)(PORT = 1521))
+    (LOAD_BALANCE = yes)
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = EMRA)
+    )
+  )
+
+HMLG =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = sgf-ora-18)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = HMLG)
+    )
+  )
+
+TOTALBANCOQAS =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = bcordqas.randon.com.br)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = TOTALBANCOQAS)
+    )
+  )
+
+TOTALBANCO =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = bcordprd.randon.com.br)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = TOTALBANCO.bcop1sbnt003.bcop1ob1vnet001.oraclevcn.com)
+    )
+  )
